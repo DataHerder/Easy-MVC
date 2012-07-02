@@ -13,7 +13,7 @@ Really simple to get up and running.  Requires access to the command line.
 - 3. cmd: touch .ready
 - 4. cmd: ./makefile.sh
 - 5. Take notice that directory "web-root" now exists.
-- 6. Point your localhost to that spot on your server.
+- 6. Point your localhost to that spot on your server to verify it works properly.
      eg: localhost/root/to/easy-mvc/web-root
 - 7. cp or mv web-root to any directory or name you wish.
      All the files in web-root are a working site.  The repo
