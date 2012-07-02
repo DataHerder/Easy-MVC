@@ -1,0 +1,31 @@
+DirectoryIndex index.php
+IndexIgnore *
+Options -Indexes
+RewriteEngine on
+RemoveHandler .html .htm
+AddType application/x-httpd-php .php .htm .html
+#RewriteBase [PUT YOUR CWD HERE]
+RewriteRule ^\.htaccess$ - [F]
+
+
+#################################
+#
+# MVC Architecture Mod Rewrites
+#
+#################################
+RewriteCond $1 !^(index\.php|public)
+RewriteCond $1 !(\.js|\.css|\.jpg|\.gif|\.png|\.jpeg|\.bmp|\.ico)$
+# completely ignore the api directory
+RewriteCond $1 !^api/?
+# include your discludes here
+# end personal discludes
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^([^?]*)\??(.*)$ index.php?__library_router_route=$1&%1 [L]
+#### END MVC MOD
+
+
+#################################
+#
+# Setup your Api redirects here
+#
+#################################

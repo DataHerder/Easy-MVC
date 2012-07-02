@@ -1,0 +1,8 @@
+{
+    "name": "MyEasyMVC Bundle",
+    "description": "Easy Model View Controller bundler",
+    "version": "0.1.0",
+    "author": "Paul Carlton",
+    "dependencies": {},
+    "devDependencies": {}
+}
