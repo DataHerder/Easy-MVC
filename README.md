@@ -1,18 +1,23 @@
 Easy-MVC
 ========
 
-A fast lightweight mvc framework
+A fast lightweight MVC framework
 --------------------------------
 
 ###Quick Introduction
 
 Really simple to get up and running.  Requires access to the command line.
 
-- 1. Download from repo
-- 2. Navigate to home directory
-- 3. ./makefile.sh
-- 4. Navigate to web-root
-- 5. Point your localhost to that URL
+- 1. Download from repo to a working web directory.
+- 2. Navigate to the repo on the command line.
+- 3. cmd: touch .ready
+- 4. cmd: ./makefile.sh
+- 5. Take notice that directory "web-root" now exists.
+- 6. Point your localhost to that spot on your server.
+     eg: localhost/root/to/easy-mvc/web-root
+- 7. cp or mv web-root to any directory or name you wish.
+     All the files in web-root are a working site.  The repo
+     only exists to continue making sites with ./makefile.sh
 
 ###Updating Production copy
 
