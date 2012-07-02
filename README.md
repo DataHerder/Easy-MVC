@@ -1,4 +1,4 @@
 Easy-MVC
 ========
 
-An fast lightweight mvc framework
+A fast lightweight mvc framework
