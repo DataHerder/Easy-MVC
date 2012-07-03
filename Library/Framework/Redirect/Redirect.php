@@ -27,7 +27,7 @@
  * @since       File available since
  */
 
-namespace Framework\Redirect;
+namespace EasyMVC\Framework\Redirect;
 
 /**
  * This class is primarily used for defining relative paths.

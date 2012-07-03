@@ -24,7 +24,7 @@
  * Obviously, since this code is in the public domain, the above are not
  * requirements (there can be none), but merely suggestions.
  */
-namespace Framework\PhpPass;
+namespace EasyMVC\Framework\BCrypt;
 
 final class PasswordHash {
 	private $itoa64;

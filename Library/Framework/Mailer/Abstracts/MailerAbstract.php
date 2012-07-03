@@ -27,7 +27,7 @@
  * @since       File available since
  */
 
-namespace Framework\Mailer\Abstracts;
+namespace EasyMVC\Framework\Mailer\Abstracts;
 
 abstract class MailerAbstract {
 	protected $to = array();

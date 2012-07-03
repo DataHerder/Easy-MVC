@@ -56,6 +56,7 @@ cp -rf "$PRO" "$ROOT"Test/
 
 # make the site
 chmod +x "$ROOT"Test/makefile.sh
+chmod +x "$ROOT"Test/Library/Dev/clean-sweep.sh
 # make the file for makefile to run
 touch "$ROOT"Test/.ready
 echo "This repo is ready to be made" > "$ROOT"Test/.ready

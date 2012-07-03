@@ -27,7 +27,7 @@
  * @since       File available since
  */
 
-namespace Framework\Mailer;
+namespace EasyMVC\Framework\Mailer;
 
 class Mailer extends Abstracts\MailerAbstract implements Abstracts\MailerInterface {
 	public function __construct(){

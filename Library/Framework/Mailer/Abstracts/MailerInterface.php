@@ -27,7 +27,7 @@
  * @since       File available since
  */
 
-namespace Framework\Mailer\Abstracts;
+namespace EasyMVC\Framework\Mailer\Abstracts;
 
 interface MailerInterface {
 	public function send();

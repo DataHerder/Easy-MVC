@@ -37,29 +37,19 @@
 include_once("config.php");
 require_once("Library/Bootstrap.php");
 
-// import the short hands for the elements
-use EasyMVC\Routers\Router as MVCRoute;
-use EasyMVC\Routers as MVCRouter;
-use EasyMVC\Bootstrap as MVCBootstrap;
-use EasyMVC\Controllers\ControllerAbstract as MVCControllerAbstract;
-use EasyMVC\Views\Errors\Error as MVCError;
-use EasyMVC\Views\Errors\ErrorAbstract as MVCErrorAbstract;
-
-
 // skeleton to the mvc bootstrap
-class MyBootstrap extends MVCBootstrap{}
-
+class MyBootstrap extends \EasyMVC\Bootstrap{}
 
 # setup the router and autoload bootstrap
-$Bootstrap = new EasyMVC\Bootstrap;
+$Bootstrap = new MyBootstrap;
 try {
 	# get the router
-	$Router = new MVCRoute($Bootstrap);
+	$Router = new EasyMVC\Routers\Router($Bootstrap);
 	# get the controller
 	$Controller = $Router->getController();
 	# call the page with the controller
 	$Controller->callPage($Router);
-} catch (MVCRouter\RouterException $RouterException) {
+} catch (\EasyMVC\Routers\Router\RouterException $RouterException) {
 	# if there was an error in the router - send a message
 	$Error = new \Views\Errors\Error;
 	$Error->printError($RouterException->getMessage());
