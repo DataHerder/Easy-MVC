@@ -90,32 +90,43 @@ final class Router {
 		} else {
 			$route_dir = 'Application\Controllers';
 		}
+
+		// assign the default controller
 		if ($controller == '' || $controller == null) {
 			$controller = $this->Bootstrap->default_controller;
 		}
-		$e = $route_dir.'\\'.ucwords($controller);
+
+		// assign the file name root class to instantiate if exists
+		$_controller = preg_replace("@/$@", '', $controller);
+		$file_root_class = $route_dir.'\\'.ucwords($_controller).'\\'.$file_name;
+		$controller_root_class = $route_dir.'\\'.ucwords($_controller);
+
 		// check that the controller exists
-		$file_library = $this->dir.'/Library/Controllers/'.implode("/",array_map('ucwords',$path)).'/'.ucwords(preg_replace("@/$@", '', $controller)).'.php';
-		$file_application = $this->dir.'/Application/Controllers/'.implode("/", array_map('ucwords', $path)).'/'.ucwords(preg_replace("@/$@", '', $controller)).'.php';
-		if (is_readable($file_library)) {
-			return new $e;
-		} elseif (is_readable($file_application)) {
-			return new $e;
+		$root_dir = $this->dir.'/Application/Controllers/'.implode("/", array_map('ucwords', $path)).'/';
+		$filename_root = $root_dir . ucwords($_controller) . '/' . $file_name;
+		$controller_root = $root_dir . ucwords($_controller).'.php';
+
+
+		if (is_readable($filename_root)) {
+			return new $file_root_class;
+		} elseif (is_readable($controller_root)) {
+			return new $controller_root_class;
 		} else {
 			// oooohh... we may have filename controller
-			$tmp1 = explode(".",$file_library);
+			$tmp1 = explode(".", $file_library);
 			array_pop($tmp1);
 			$tmp2 = explode(".", $file_application);
 			array_pop($tmp2);
 			$file_library = $file_library.'/'.join(".", $tmp1).'/'.$file_name.".php";
 			$file_application = $file_application.'/'.join(".", $tmp2).'/'.$file_name.".php";
 			if (is_readable($file_libaray)) {
-				return new $e.'\\'.$file_name;
+				return new $controller_root_class . '\\' . $file_name;
 			} elseif (is_readable($file_application)) {
-				return new $e.'\\'.$file_name;
+				return new $controller_root_class . '\\' . $file_name;
 			}
 			throw new \EasyMVC\Routers\RouterException('Document not found');
 		}
+
 	}
 
 	/**
