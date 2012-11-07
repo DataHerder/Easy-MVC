@@ -29,6 +29,10 @@
 
 namespace EasyMVC;
 
+abstract class BootstrapAbstract {
+	abstract protected function _init();
+}
+
 /**
  * Bootstrap class
  * 
@@ -36,7 +40,7 @@ namespace EasyMVC;
  * @package Library
  * @subpackage Bootstrap
  */
-class Bootstrap {
+class Bootstrap extends BootstrapAbstract {
 
 	/**
 	 * Defines the current controller and keeps track of the root
@@ -55,6 +59,13 @@ class Bootstrap {
 	 */
 	const ROOT_DIR = ROOT_DIR;
 
+	/**
+	 * An array of functions that customizes the namespace path
+	 * 
+	 * @var array
+	 * @access protected
+	 */
+	protected static $registerPaths = array();
 
 	/**
 	 * constructer function
@@ -78,6 +89,7 @@ class Bootstrap {
 	 */
 	private function requireHelpers()
 	{
+		require_once('Helpers/Functions/Array.php');
 		require_once('Helpers/Functions/Request.php');
 	}
 
@@ -131,16 +143,39 @@ class Bootstrap {
 	 */
 	public static function requireLibrary($class_name)
 	{
-		$dir = $_SERVER['DOCUMENT_ROOT'].self::ROOT_DIR;
+		// for here we want to shift the first
+		$directories = explode("/", self::ROOT_DIR);
+		$first = array_shift($directories);
+		if ($first == '') {
+			$first = array_shift($directories);
+		}
+		$dir = $_SERVER['DOCUMENT_ROOT'].'/'.$first;
 		$parts = explode("\\", $class_name);
 		if ($parts[0] == 'EasyMVC') {
 			// We are taking of the package name EasyMVC
 			array_shift($parts);
 			array_unshift($parts,'Library');
+		} elseif ($parts[0] == 'SqlBuilder') {
+			array_unshift($parts,'Framework');
+			array_unshift($parts,'Library');
+		}
+		if (!empty(self::$registerPaths)) {
+			foreach (self::$registerPaths as $Func) {
+				if (is_callable($Func)) {
+					$Func($parts);
+				}
+			}
 		}
 		$file_dir = $dir.self::$paths[$i].'/'.join("/", $parts).".php";
 		if (is_readable($file_dir)) {
 			require_once($file_dir);
+		}
+	}
+
+	protected function registerPath($func)
+	{
+		if (is_callable($func)) {
+			array_push(self::$registerPaths, $func);
 		}
 	}
 

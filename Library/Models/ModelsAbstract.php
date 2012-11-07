@@ -52,13 +52,14 @@ abstract class ModelsAbstract {
 	 */
 	public function __construct()
 	{
-		$this->PasswordHash = new PhpPass\Password;
+		$this->PasswordHash = new \EasyMVC\Framework\BCrypt\PasswordHash(8, false);
 	}
 
 	/**
 	 * Hashes a string using Bcrypt
 	 * 
-	 * @throws 
+	 * @access public
+	 * @throws EasyMVC\ModelException
 	 * @param mixed $toHash
 	 * @return mixed
 	 */
@@ -76,6 +77,31 @@ abstract class ModelsAbstract {
 			throw new EasyMVC\ModelException('Trying to hash an invalid value');
 		} else {
 			return $this->PasswordHash->HashPassword($toHash);
+		}
+	}
+
+	/**
+	 * Decrypt the bcrypt hash
+	 * 
+	 * @access public
+	 * @param mixed $fromHash
+	 * @throws EasyMVC\ModelException
+	 * @return mixed
+	 */
+	public function check($fromHash = null)
+	{
+		if (is_null($fromHash)) {
+			return '';
+		}
+		if ((is_object($fromHash) && $fromHash instanceof \stdClass) || is_array($fromHash)) {
+			foreach ($fromHash as $i => $b) {
+				$toHash[$i] = $this->PasswordHash->CheckPassword($b);
+			}
+			return $toHash;
+		} elseif (is_object($fromHash) && (!$fromHash instanceof \stdClass)) {
+			throw new EasyMVC\ModelException('Trying to hash an invalid value');
+		} else {
+			return $this->PasswordHash->CheckPassword($fromHash);
 		}
 	}
 }

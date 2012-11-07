@@ -15,6 +15,7 @@ fi
 # setup the development variable to copy files from
 PRO="$ROOT"Production/
 if [ "$1" = "-h" ]; then
+	#inspect this
 	DEV="../"
 elif [ "$1" = "-d" ]; then
 	DEV="$ROOT"Development/
