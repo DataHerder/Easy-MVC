@@ -144,12 +144,7 @@ class Bootstrap extends BootstrapAbstract {
 	public static function requireLibrary($class_name)
 	{
 		// for here we want to shift the first
-		$directories = explode("/", self::ROOT_DIR);
-		$first = array_shift($directories);
-		if ($first == '') {
-			$first = array_shift($directories);
-		}
-		$dir = $_SERVER['DOCUMENT_ROOT'].'/'.$first;
+		$dir = $_SERVER['DOCUMENT_ROOT'].self::ROOT_DIR;
 		$parts = explode("\\", $class_name);
 		if ($parts[0] == 'EasyMVC') {
 			// We are taking of the package name EasyMVC
@@ -166,7 +161,8 @@ class Bootstrap extends BootstrapAbstract {
 				}
 			}
 		}
-		$file_dir = $dir.self::$paths[$i].'/'.join("/", $parts).".php";
+
+		$file_dir = $dir.'/'.join("/", $parts).".php";
 		if (is_readable($file_dir)) {
 			require_once($file_dir);
 		}
