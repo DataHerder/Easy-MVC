@@ -1,4 +1,5 @@
 <?php 
+
 /**
  * EasyMVC
  * A fast lightweight Model View Controller framework
