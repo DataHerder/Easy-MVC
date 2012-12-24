@@ -77,20 +77,10 @@ abstract class ControllerAbstract
 
 	/**
 	 * Calls the Page
-	 * 
-	 * @param Router $Router
+	 *
+	 * @param \EasyMVC\Routers\Router $Router $Router
 	 */
 	public function callPage(\EasyMVC\Routers\Router $Router)
 	{
-		$file_name = $Router->getFileName();
-		if ($file_name == '') {
-			$file_name = $Bootstrap->root;
-		}
-
-		if (method_exists($this, $file_name)) {
-			call_user_func(array($this, $file_name));
-		} else {
-			$this->Error->get404($file_name);
-		}
 	}
 }

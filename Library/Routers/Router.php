@@ -37,12 +37,14 @@ namespace EasyMVC\Routers;
  */
 final class Router {
 
+
 	/**
 	 * 
 	 * @var array
 	 * @access private
 	 */
 	private $route = array();
+
 
 	/**
 	 * 
@@ -51,12 +53,14 @@ final class Router {
 	 */
 	private $Error = null;
 
+
 	/**
 	 * 
 	 * @var \EasyMVC\Bootstrap
 	 * 
 	 */
 	protected $Boostrap = null;
+
 
 	/**
 	 * Sets the route and variables
@@ -75,6 +79,7 @@ final class Router {
 		$this->Error = new \EasyMVC\Views\Errors\Error;
 	}
 
+
 	/**
 	 * Gets the the controller needed to finish the request
 	 * 
@@ -82,52 +87,88 @@ final class Router {
 	 * 
 	 * @throws \EasyMVC\Routers\RouterException
 	 */
-	public function getController()
+	public function callController()
 	{
-		list($file_name, $controller, $path) = $this->_traverseRoute();
+		list($page, $controller, $path) = $this->_traverseRoute();
+
+
 		if (!empty($path)) {
-			$route_dir = 'Application\Controllers\\'.join("\\", array_map('ucwords',$path));
+			$namespace = 'Application\Controllers\\'.join('\\', array_map('ucwords', $path));
+			$root_dir = $this->dir.'/Application/Controllers/'.join('/',array_map('ucwords', $path));
 		} else {
-			$route_dir = 'Application\Controllers';
+			$namespace = 'Application\Controllers';
+			$root_dir = $this->dir.'/Application/Controllers';
 		}
 
-		// assign the default controller
-		if ($controller == '' || $controller == null) {
+		// special case where controller needs to be landing
+		if ($controller == "" && $page == '') {
 			$controller = $this->Bootstrap->default_controller;
+			$page = $this->Bootstrap->root;
 		}
 
-		// assign the file name root class to instantiate if exists
-		$_controller = preg_replace("@/$@", '', $controller);
-		$file_root_class = $route_dir.'\\'.ucwords($_controller).'\\'.$file_name;
-		$controller_root_class = $route_dir.'\\'.ucwords($_controller);
-
-		// check that the controller exists
-		$root_dir = $this->dir.'/Application/Controllers/'.implode("/", array_map('ucwords', $path)).'/';
-		$filename_root = $root_dir . ucwords($_controller) . '/' . $file_name;
-		$controller_root = $root_dir . ucwords($_controller).'.php';
-
-		// read the file name
-		if (is_readable($filename_root)) {
-			return new $file_root_class;
-		} elseif (is_readable($controller_root)) {
-			return new $controller_root_class;
-		} else {
-			// oooohh... we may have filename controller
-			$tmp1 = explode(".", $file_library);
-			array_pop($tmp1);
-			$tmp2 = explode(".", $file_application);
-			array_pop($tmp2);
-			$file_library = $file_library.'/'.join(".", $tmp1).'/'.$file_name.".php";
-			$file_application = $file_application.'/'.join(".", $tmp2).'/'.$file_name.".php";
-			if (is_readable($file_libaray)) {
-				return new $controller_root_class . '\\' . $file_name;
-			} elseif (is_readable($file_application)) {
-				return new $controller_root_class . '\\' . $file_name;
+		$controllers = array();
+		if ($page != $this->Bootstrap->root) {
+			if ($controller == '') {
+				$controller = $this->Bootstrap->default_controller;
 			}
-			throw new \EasyMVC\Routers\RouterException('Document not found');
+			$controllers[0] = array(
+				'page' => $page,
+				'controller' => $controller,
+				'php_file' => $root_dir.'/'.$controller.'.php',
+				'class' => $namespace.'\\'.$controller,
+				'_page' => false,
+			);
+			$controllers[1] = array(
+				'page' => $this->Bootstrap->root,
+				'controller' => $page,
+				'php_file' => $root_dir.'/'.$page.'.php',
+				'class' => $namespace.'\\'.$page,
+				'_page' => true,
+			);
+		} else {
+			$controllers[0] = array(
+				'page' => $page,
+				'controller' => $controller,
+				'php_file' => $root_dir.'/'.$controller.'.php',
+				'class' => $namespace.'\\'.$controller,
+				'_page' => false,
+			);
 		}
+
+
+		for ($i = 0; $i < count($controllers); $i++) {
+			$php_file = $controllers[$i]['php_file'];
+			$class = $controllers[$i]['class'];
+			$page = $controllers[$i]['page'];
+			if (is_readable($php_file)) {
+				// redirect with query
+				$uri = $_SERVER['REQUEST_URI'];
+				list ($uri, $qst) = explode("?", $uri);
+				if (!preg_match("@/$@", $uri) && $controllers[$i]['_page'] === true && REDIRECT_SLASH) {
+					// strip the index
+					$tmp = explode("&", $qst);
+					if (preg_match("@__library_router_route@", $tmp[0])) {
+						array_shift($tmp); // strip the library off the query string and implode the rest
+					}
+					$qst = implode('&', $tmp);
+					$q = $uri.'/';
+					if ($qst != '') {
+						$q .= '?'.$qst;
+					}
+					header('Location: '.$q);
+				}
+				$cr = new $class;
+				if (method_exists($cr, $page)) {
+					call_user_func(array($cr, $page));
+					return true;
+				}
+			}
+		}
+
+		throw new \EasyMVC\Routers\RouterException('Document not found');
 
 	}
+
 
 	/**
 	 * Helper function to get file name, controller and route
@@ -140,18 +181,22 @@ final class Router {
 		$route = $this->route;
 		$last = end($route);
 		if (count($this->route) == 1) {
-			$file_name = array_pop($route);
-			$controller = 'Landing'; //default controller
-			return array($file_name, $controller, $route);
+			$page = array_pop($route);
+			$controller = ''; //default controller
+			return array($page, $controller, $route);
 		} elseif (count($this->route) > 1) {
-			$file_name = array_pop($route);
+			$page = array_pop($route);
 			$controller = array_pop($route);
-			return array($file_name, $controller, $route);
+			if ($page == '') {
+				$page = $this->Bootstrap->root;
+			}
+			return array($page, $controller, $route);
 		} else {
-			return array('', '', $route);
+			return array('index', '', $route);
 		}
 
 	}
+
 
 	/**
 	 * Gets the file name from traversing the route
@@ -161,10 +206,22 @@ final class Router {
 	public function getFileName()
 	{
 		list($file_name, $controller, $path) = $this->_traverseRoute();
-		if ($file_name == '') {
-			return $this->Bootstrap->root;
+
+		// this is how to handle the trailing slash
+		// the controller doesn't exist, which means we are accessing
+		// a controller without a backslash in the URL, so we set
+		// the file_name = '' so that it defaults - the file_name
+		// becomes the empty while the controller becomes the
+		// file_name
+		if ($controller == '') {
+			return '';
 		} else {
-			return $file_name;
+
+			if ($file_name == '') {
+				return $this->Bootstrap->root;
+			} else {
+				return $file_name;
+			}
 		}
 	}
 
@@ -176,3 +233,7 @@ final class Router {
 class RouterException extends \Exception {}
 
 
+function dbg($data = array())
+{
+	print '<pre>'.print_r($data,true).'</pre>';
+}

@@ -46,11 +46,10 @@ try {
 	# get the router
 	$Router = new EasyMVC\Routers\Router($Bootstrap);
 	# get the controller
-	$Controller = $Router->getController();
-	# call the page with the controller
-	$Controller->callPage($Router);
-} catch (\EasyMVC\Routers\Router\RouterException $RouterException) {
+	$Router->callController();
+} catch (\EasyMVC\Routers\RouterException $RouterException) {
 	# if there was an error in the router - send a message
-	$Error = new \Views\Errors\Error;
+	$Error = new \EasyMVC\Views\Errors\Error;
 	$Error->printError($RouterException->getMessage());
 }
+

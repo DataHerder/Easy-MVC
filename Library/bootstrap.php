@@ -1,5 +1,4 @@
 <?php 
-
 /**
  * EasyMVC
  * A fast lightweight Model View Controller framework
@@ -146,6 +145,9 @@ class Bootstrap extends BootstrapAbstract {
 	{
 		// for here we want to shift the first
 		$dir = $_SERVER['DOCUMENT_ROOT'].self::ROOT_DIR;
+		if (preg_match("@Api/?$@", $dir)) {
+			$dir = preg_replace("@Api/?$@", "", $dir);
+		}
 		$parts = explode("\\", $class_name);
 		if ($parts[0] == 'EasyMVC') {
 			// We are taking of the package name EasyMVC
