@@ -89,6 +89,7 @@ touch "$ROOT"$WEBROOT/Media/css/less/main.less
 mkdir "$ROOT"$WEBROOT/Media/css/compiled
 mkdir "$ROOT"$WEBROOT/Media/css/resources
 mkdir "$ROOT"$WEBROOT/Media/img
+mkdir "$ROOT"$WEBROOT/Media/js
 
 cp -rf "$ROOT"Library/Controllers "$ROOT"$WEBROOT/Library/Controllers
 cp -rf "$ROOT"Library/Framework "$ROOT"$WEBROOT/Library/Framework

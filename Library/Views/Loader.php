@@ -80,7 +80,6 @@ class Loader
 		if (!is_string($view)) {
 			return false;
 		} else {
-			extract($array_extract);
 			if (is_readable($_SERVER['DOCUMENT_ROOT'].\EasyMVC\Bootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
 				return true;
 			} elseif (is_readable($_SERVER['DOCUMENT_ROOT'].\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
