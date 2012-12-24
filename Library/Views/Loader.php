@@ -42,6 +42,13 @@ class Loader
 		$this->Load =& $this;
 	}
 
+	/**
+	 * Loads the view
+	 * 
+	 * @param $view
+	 * @param array $array_extract
+	 * @throws LoaderException
+	 */
 	public function view($view, $array_extract = array())
 	{
 		if (!is_string($view)) {
@@ -54,6 +61,32 @@ class Loader
 				include($_SERVER['DOCUMENT_ROOT'].\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php');
 			} else {
 				throw new LoaderException('There was an error loading the view.');
+			}
+		}
+	}
+
+	/**
+	 * Checks by the same measure that view in fact exists
+	 * This function is handy for __call() method in a 
+	 * controller - whereby you want dynamically load views
+	 * through the controller and want to check to see
+	 * if the view exists
+	 * 
+	 * @param string $view
+	 * @return bool
+	 */
+	public function viewExists($view)
+	{
+		if (!is_string($view)) {
+			return false;
+		} else {
+			extract($array_extract);
+			if (is_readable($_SERVER['DOCUMENT_ROOT'].\EasyMVC\Bootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
+				return true;
+			} elseif (is_readable($_SERVER['DOCUMENT_ROOT'].\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 	}

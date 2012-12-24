@@ -1,23 +1,23 @@
-<?php 
+<?php
 /**
  * EasyMVC
  * A fast lightweight Model View Controller framework
- * 
+ *
  * Copyright (C) 2012  Paul Carlton
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author      Paul Carlton
  * @category    EasyMVC
  * @package     Library
@@ -35,7 +35,7 @@ abstract class BootstrapAbstract {
 
 /**
  * Bootstrap class
- * 
+ *
  * Sets up the environment
  * @package Library
  * @subpackage Bootstrap
@@ -44,7 +44,7 @@ class Bootstrap extends BootstrapAbstract {
 
 	/**
 	 * Defines the current controller and keeps track of the root
-	 * 
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -53,7 +53,7 @@ class Bootstrap extends BootstrapAbstract {
 	/**
 	 * The root directory of the site, used for redirects
 	 * and correct routing
-	 * 
+	 *
 	 * @var string
 	 * @access public
 	 */
@@ -61,7 +61,7 @@ class Bootstrap extends BootstrapAbstract {
 
 	/**
 	 * An array of functions that customizes the namespace path
-	 * 
+	 *
 	 * @var array
 	 * @access protected
 	 */
@@ -82,7 +82,7 @@ class Bootstrap extends BootstrapAbstract {
 	/**
 	 * Require Helpers requires the needed helper function
 	 * classes made to make the developers life easier
-	 * 
+	 *
 	 * @access private
 	 * @param null
 	 * @return null
@@ -94,9 +94,9 @@ class Bootstrap extends BootstrapAbstract {
 	}
 
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 */
 	public function __get($name)
 	{
@@ -111,7 +111,7 @@ class Bootstrap extends BootstrapAbstract {
 	 * The _init function is a user defined function
 	 * able to take extra parameters and change
 	 * behavior in the bootstrap
-	 * 
+	 *
 	 * @access public
 	 * @param null
 	 * @return null
@@ -125,7 +125,7 @@ class Bootstrap extends BootstrapAbstract {
 
 	/**
 	 * Carries the paths needed to autoload classes
-	 * 
+	 *
 	 * @var array
 	 * @access protected
 	 */
@@ -137,7 +137,7 @@ class Bootstrap extends BootstrapAbstract {
 	/**
 	 * Require Library is an auto load function
 	 * It is registered in when constructing the bootstrap
-	 * 
+	 *
 	 * @param String $class_name
 	 * @return null
 	 */
@@ -182,8 +182,7 @@ class Bootstrap extends BootstrapAbstract {
 
 /**
  * A shell class for bootstrap exception
- * 
+ *
  */
 class BootstrapException extends \Exception {}
-
 
