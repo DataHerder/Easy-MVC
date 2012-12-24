@@ -161,6 +161,10 @@ final class Router {
 				if (method_exists($cr, $page)) {
 					call_user_func(array($cr, $page));
 					return true;
+				} elseif (!method_exists($cr, $page) && method_exists($cr, '__call')) {
+					$arguments = array();
+					$cr->_call($page, $arguments);
+					return true;
 				}
 			}
 		}
