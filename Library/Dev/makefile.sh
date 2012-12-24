@@ -98,6 +98,9 @@ cp -rf "$ROOT"Library/Models    "$ROOT"$WEBROOT/Library/Models
 cp -rf "$ROOT"Library/Routers   "$ROOT"$WEBROOT/Library/Routers
 cp -rf "$ROOT"Library/Views     "$ROOT"$WEBROOT/Library/Views
 
+#make the response directory
+mkdir "$ROOT"$WEBROOT/Application/Views/Responses
+
 # make API directory
 mkdir "$ROOT"$WEBROOT/Api
 

@@ -39,6 +39,7 @@ cp -rf "$DEV"Controllers "$PRO"Library/Controllers
 cp -rf "$DEV"Framework "$PRO"Library/Framework
 cp -rf "$DEV"Helpers "$PRO"Library/Helpers
 cp -rf "$DEV"Models "$PRO"Library/Models
+cp -rf "$DEV"Responses "$PRO"Library/Responses
 cp -rf "$DEV"Routers "$PRO"Library/Routers
 cp -rf "$DEV"Views "$PRO"Library/Views
 
