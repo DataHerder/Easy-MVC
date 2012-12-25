@@ -73,7 +73,7 @@ final class Router {
 		//debug_array($_GET);
 		$route = $_GET['__library_router_route'];
 		unset($_GET['__library_router_route']);
-		$this->dir = $_SERVER['DOCUMENT_ROOT'].$Bootstrap::ROOT_DIR;
+		$this->dir = $Bootstrap::ROOT_DIR;
 		$this->route = explode("/", $route);
 		$this->Bootstrap = $Bootstrap;
 		$this->Error = new \EasyMVC\Views\Errors\Error;
@@ -155,6 +155,7 @@ final class Router {
 					if ($qst != '') {
 						$q .= '?'.$qst;
 					}
+					header(':', true, 303);
 					header('Location: '.$q);
 				}
 				$cr = new $class;

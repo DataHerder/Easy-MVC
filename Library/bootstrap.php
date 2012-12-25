@@ -60,6 +60,15 @@ class Bootstrap extends BootstrapAbstract {
 	const ROOT_DIR = ROOT_DIR;
 
 	/**
+	 * The root directory of the site, used for redirects
+	 * and correct routing
+	 *
+	 * @var string
+	 * @access public
+	 */
+	const CUR_DIR = CUR_DIR;
+
+	/**
 	 * An array of functions that customizes the namespace path
 	 *
 	 * @var array
@@ -144,7 +153,7 @@ class Bootstrap extends BootstrapAbstract {
 	public static function requireLibrary($class_name)
 	{
 		// for here we want to shift the first
-		$dir = $_SERVER['DOCUMENT_ROOT'].self::ROOT_DIR;
+		$dir = $_SERVER['DOCUMENT_ROOT'].self::CUR_DIR;
 		if (preg_match("@Api/?$@", $dir)) {
 			$dir = preg_replace("@Api/?$@", "", $dir);
 		}

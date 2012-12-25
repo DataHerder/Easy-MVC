@@ -98,9 +98,6 @@ cp -rf "$ROOT"Library/Models    "$ROOT"$WEBROOT/Library/Models
 cp -rf "$ROOT"Library/Routers   "$ROOT"$WEBROOT/Library/Routers
 cp -rf "$ROOT"Library/Views     "$ROOT"$WEBROOT/Library/Views
 
-#make the response directory
-mkdir "$ROOT"$WEBROOT/Application/Views/Responses
-
 # make API directory
 mkdir "$ROOT"$WEBROOT/Api
 
@@ -108,6 +105,7 @@ mkdir "$ROOT"$WEBROOT/Api
 cp "$ROOT"Library/Dev/.htaccess  "$ROOT"$WEBROOT/.htaccess
 cp "$ROOT"Library/Dev/index.php  "$ROOT"$WEBROOT/index.php
 cp "$ROOT"Library/Dev/config.php "$ROOT"$WEBROOT/config.php
+cp "$ROOT"Library/Dev/config-app.php "$ROOT"$WEBROOT/Application/config.php
 cp "$ROOT"Library/Bootstrap.php   "$ROOT"$WEBROOT/Library/Bootstrap.php
 
 # make the docs page
