@@ -4,28 +4,44 @@ Easy-MVC
 A fast lightweight MVC framework
 --------------------------------
 
-###Quick Introduction
+## Introduction
+The whole point of EasyMVC is to have a real light bare bones MVC application
+so you can concentrate on the fun stuff.  There is little to no function
+base and no crazy amount of libraries to do whatever you can think of.  What
+this allows is complete control over how your application will work for you.
 
-Really simple to get up and running.  Requires access to the command line.
+It is designed in such a way that you can bootstrap and include whatever
+codebase of functions or libraries you want.  Including namespaced libraries
+is easy by coding in the autoload feature within bootstrap the specifics
+on where the libraries exist.
 
-- 1. Download from repo to a working web directory.
-- 2. Navigate to the repo on the command line.
-- 3. cmd: touch .ready
-- 4. cmd: ./makefile.sh
-- 5. Take notice that directory "web-root" now exists.
-- 6. Point your localhost to that spot on your server to verify it works properly.
-     eg: localhost/root/to/easy-mvc/web-root
-- 7. cp or mv web-root to any directory or name you wish.
-     All the files in web-root are a working site.  The repo
-     only exists to continue making sites with ./makefile.sh
+If you want more control and less "do it for you" kind of approach with
+the ability to be completely OOP if you wish or have a heavy functional
+base, it's up to you.  You are welcome to contribute if you like it.
 
-###Updating Production copy
+### Installing
+Just download from git and make sure it's in a fresh folder on your
+server or localhost.  Will work as is.
 
-Do the same thing as mentioned above.  However the only difference is
-that you simply have to copy over the library.  That's it.
+### Documentation
+Unfortunately, there is no documentation as of yet, but that will
+be coming very shortly.
 
-###What does ./makefile.sh do?
+### I noticed an API directory... what's that about?
+That's an API library that handles API requests within the API folder in
+the Applications directory.  Requests look like this:
+http://my_project.com/api/main_request/sub_request/my_request.xml
 
-It just makes a working site for you using the library.  It sets
-up the working directories and the site structure, puts a welcome
-page in there and situates files.
+And the API will spit back xml, even if there is an error.
+
+This will be covered in the forthcoming documentation.
+
+###Coming Shortly
+An update script so that on every pull you can run this
+update on the directory of your application: either
+php on the browser or perl on the command line
+
+###Still work to be done
+Although this version is now stable with documentation forthcoming,
+there's still work that could be done.  Feedback, special case scenarios
+and problem shooting is welcome.

@@ -45,7 +45,9 @@ abstract class ModelsAbstract {
 	 * @var Password
 	 * @access private
 	 */
-	private $PasswordHash;
+	protected $PasswordHash;
+
+	public $db = null;
 
 	/**
 	 * Constructor instantiates password hash
@@ -53,14 +55,26 @@ abstract class ModelsAbstract {
 	public function __construct()
 	{
 		$this->PasswordHash = new \EasyMVC\Framework\BCrypt\PasswordHash(8, false);
+		$Bootstrap = get_bootstrap();
+		$Sql = $Bootstrap->db;
+		if (!is_null($Sql)) {
+			$this->db = $Sql;
+		}
+	}
+
+	public static function getDB()
+	{
+		$Bootstrap = get_bootstrap();
+		return $Bootstrap->db;
 	}
 
 	/**
 	 * Hashes a string using Bcrypt
-	 * 
+	 *
 	 * @access public
-	 * @throws EasyMVC\ModelException
+	 *
 	 * @param mixed $toHash
+	 * @throws \EasyMVC\ModelException
 	 * @return mixed
 	 */
 	public function hash($toHash = null)
@@ -74,7 +88,7 @@ abstract class ModelsAbstract {
 			}
 			return $toHash;
 		} elseif (is_object($toHash) && (!$toHash instanceof \stdClass)) {
-			throw new EasyMVC\ModelException('Trying to hash an invalid value');
+			throw new \EasyMVC\ModelException('Trying to hash an invalid value');
 		} else {
 			return $this->PasswordHash->HashPassword($toHash);
 		}
@@ -85,7 +99,7 @@ abstract class ModelsAbstract {
 	 * 
 	 * @access public
 	 * @param mixed $fromHash
-	 * @throws EasyMVC\ModelException
+	 * @throws \EasyMVC\ModelException
 	 * @return mixed
 	 */
 	public function check($fromHash = null)
@@ -99,7 +113,7 @@ abstract class ModelsAbstract {
 			}
 			return $toHash;
 		} elseif (is_object($fromHash) && (!$fromHash instanceof \stdClass)) {
-			throw new EasyMVC\ModelException('Trying to hash an invalid value');
+			throw new \EasyMVC\ModelException('Trying to hash an invalid value');
 		} else {
 			return $this->PasswordHash->CheckPassword($fromHash);
 		}

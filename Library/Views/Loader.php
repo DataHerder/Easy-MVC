@@ -55,10 +55,10 @@ class Loader
 			throw new LoaderException('No view specified to load.');
 		} else {
 			extract($array_extract);
-			if (is_readable(\EasyMVC\Bootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
-				include(\EasyMVC\Bootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php');
-			} elseif (is_readable(\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
-				include(\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php');
+			if (is_readable(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
+				include(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php');
+			} elseif (is_readable(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
+				include(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php');
 			} else {
 				throw new LoaderException('There was an error loading the view.');
 			}
@@ -80,9 +80,9 @@ class Loader
 		if (!is_string($view)) {
 			return false;
 		} else {
-			if (is_readable(\EasyMVC\Bootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
+			if (is_readable(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Library/Views/'.$view.'.php')) {
 				return true;
-			} elseif (is_readable(\EasyMVC\Bootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
+			} elseif (is_readable(\EasyMVC\EasyMVCBootstrap::ROOT_DIR.'/Application/Views/'.$view.'.php')) {
 				return true;
 			} else {
 				return false;

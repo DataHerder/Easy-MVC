@@ -42,7 +42,7 @@
 function getPost($n)
 {
 	if (!is_string($n)) {
-		throw Exception('Parameter passed is not a string');
+		return false;
 	}
 	if(isSet($_POST[$n])) {
 		return $_POST[$n];
@@ -66,7 +66,7 @@ function getPost($n)
 function getGet($n)
 {
 	if (!is_string($n)) {
-		throw Exception('Parameter passed is not a string');
+		return false;
 	}
 	if(isSet($_GET[$n])) {
 		return $_GET[$n];

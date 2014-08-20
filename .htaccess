@@ -1,0 +1,69 @@
+DirectoryIndex index.php
+IndexIgnore *
+Options -Indexes
+RewriteEngine on
+RemoveHandler .html .htm
+RewriteRule ^\.htaccess$ - [F]
+#END HTACCESS CONFIG
+
+#################################
+#
+# User Preconditions
+#
+#################################
+### these custom definitions should be ran before the MVC architecture rewrites
+
+
+#################################
+#
+# MVC Architecture Mod Rewrites
+#
+#################################
+
+#== {MVCARCH1} ignore index.php, cron and public folder
+RewriteCond $1 !^(index\.php|public|cron)
+#== {MVCARCH2} ignore all media type files
+RewriteCond $1 !(\.js|\.css|\.less|\.jpg|\.gif|\.png|\.jpeg|\.bmp|\.ico|\.mp3|\.wav)$
+#== {MVCARCH3} ignore miscellaneous media files used in stylesheets
+RewriteCond $1 !(\.eot|\.svg|\.ttf|\.woff)
+#== {MVCARCH4} ignore pdfs, .docs, .txt files
+RewriteCond $1 !(\.txt|\.pdf|\.doc)
+#== {MVCARCH5} completely ignore the api directory
+RewriteCond $1 !^[aA]pi/?
+
+### Your exclusion conditions from the MVC rewrite should go in here
+### Syntax: RewriteCond $1 ![regex]
+### $1 references the url and not the GET parameters
+#// BEGIN custom exclusion conditions
+#// END custom exclusions conditions
+
+#== {MVCARCH6} Keep the GET parameters in %1 variable
+RewriteCond %{QUERY_STRING} ^(.*)$
+#== {MVCARCH7} Rewrite all paths to the index file excluding the rewrite conditions defined above
+RewriteRule ^([^?]*)\??(.*)$ index.php?__library_router_route=$1&%1 [L]
+#### END MVC MOD
+
+
+#################################
+#
+# API Redirects
+#
+#################################
+
+### Include your API redirects and exclusions here
+### Syntax matches MVC exclusion conditions
+#// BEGIN custom exclusion conditions
+#// END custom exclusions conditions
+
+#== {MVCAPI1} Keep the GET parameters in %1 variable
+RewriteCond %{QUERY_STRING} !directory.*
+#== {MVCAPI2} Rewrite all paths directed to the API to the API controller
+RewriteRule ^[Aa]pi/(.*)$ Api/index.php?directory=$1 [L]
+
+
+
+#################################
+#
+# User Conditions
+#
+#################################

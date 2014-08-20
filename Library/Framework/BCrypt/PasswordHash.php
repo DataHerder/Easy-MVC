@@ -32,7 +32,7 @@ final class PasswordHash {
 	private $portable_hashes;
 	private $random_state;
 
-	function PasswordHash($iteration_count_log2, $portable_hashes)
+	public function __construct($iteration_count_log2 = 8, $portable_hashes = false)
 	{
 		$this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
@@ -47,7 +47,7 @@ final class PasswordHash {
 			$this->random_state .= getmypid();
 	}
 
-	function get_random_bytes($count)
+	private function get_random_bytes($count)
 	{
 		$output = '';
 		if (is_readable('/dev/urandom') &&
@@ -70,7 +70,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function encode64($input, $count)
+	private function encode64($input, $count)
 	{
 		$output = '';
 		$i = 0;
@@ -93,7 +93,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function gensalt_private($input)
+	private function gensalt_private($input)
 	{
 		$output = '$P$';
 		$output .= $this->itoa64[min($this->iteration_count_log2 +
@@ -103,7 +103,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function crypt_private($password, $setting)
+	private function crypt_private($password, $setting)
 	{
 		$output = '*0';
 		if (substr($setting, 0, 2) == $output)
@@ -148,7 +148,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function gensalt_extended($input)
+	private function gensalt_extended($input)
 	{
 		$count_log2 = min($this->iteration_count_log2 + 8, 24);
 		# This should be odd to not reveal weak DES keys, and the
@@ -166,7 +166,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function gensalt_blowfish($input)
+	private function gensalt_blowfish($input)
 	{
 		# This one needs to use a different order of characters and a
 		# different encoding scheme from the one in encode64() above.
@@ -207,7 +207,7 @@ final class PasswordHash {
 		return $output;
 	}
 
-	function HashPassword($password)
+	public function hashPassword($password)
 	{
 		$random = '';
 
@@ -242,7 +242,7 @@ final class PasswordHash {
 		return '*';
 	}
 
-	function CheckPassword($password, $stored_hash)
+	public function checkPassword($password, $stored_hash)
 	{
 		$hash = $this->crypt_private($password, $stored_hash);
 		if ($hash[0] == '*')

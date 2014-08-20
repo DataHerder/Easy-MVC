@@ -56,19 +56,19 @@ final class Router {
 
 	/**
 	 * 
-	 * @var \EasyMVC\Bootstrap
+	 * @var \EasyMVC\EasyMVCBootstrap
 	 * 
 	 */
-	protected $Boostrap = null;
+	protected $Bootstrap = null;
 
 
 	/**
 	 * Sets the route and variables
 	 * needed by the router
-	 * 
-	 * @param \EasyMVC\Bootstrap
+	 *
+	 * @param \EasyMVC\EasyMVCBootstrap $Bootstrap
 	 */
-	public function __construct(\EasyMVC\Bootstrap $Bootstrap)
+	public function __construct(\EasyMVC\EasyMVCBootstrap $Bootstrap)
 	{
 		//debug_array($_GET);
 		$route = $_GET['__library_router_route'];
@@ -124,6 +124,13 @@ final class Router {
 				'php_file' => $root_dir.'/'.$page.'.php',
 				'class' => $namespace.'\\'.$page,
 				'_page' => true,
+			);
+			$controllers[2] = array(
+				'page' => $this->Bootstrap->root,
+				'controller' => $controller,
+				'php_file' => $root_dir.'/'.$controller.'/'.$page.'.php',
+				'class' => $namespace.'\\'.$controller.'\\'.$page,
+				'_page' => false,
 			);
 		} else {
 			$controllers[0] = array(
@@ -187,8 +194,9 @@ final class Router {
 		$last = end($route);
 		if (count($this->route) == 1) {
 			$page = array_pop($route);
-			$controller = ''; //default controller
+			$controller = '';
 			return array($page, $controller, $route);
+
 		} elseif (count($this->route) > 1) {
 			$page = array_pop($route);
 			$controller = array_pop($route);
@@ -196,6 +204,7 @@ final class Router {
 				$page = $this->Bootstrap->root;
 			}
 			return array($page, $controller, $route);
+
 		} else {
 			return array('index', '', $route);
 		}

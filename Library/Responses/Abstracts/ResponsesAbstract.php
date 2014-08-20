@@ -33,16 +33,18 @@ abstract class ResponsesAbstract extends \Exception {
 	protected $response_code = 0;
 	protected $internal_error = false;
 	protected $error_message = null;
+	private $allowed = array();
 
 	/**
 	 * Construct the http response exception
-	 * 
+	 *
 	 * @param int $response_code
 	 * @param int $message
+	 * @param array $params
 	 * @param int $code
 	 * @param \Exception $previous
 	 */
-	public function __construct($response_code = 0, $message, $code = 0, \Exception $previous = null)
+	public function __construct($response_code = 0, $message, $params = array(), $code = 0, \Exception $previous = null)
 	{
 		$this->response_code = $response_code;
 		if ($this->response_code == 0) {
@@ -50,14 +52,14 @@ abstract class ResponsesAbstract extends \Exception {
 			$this->error_message = 'Response Code set 0: Not a valid http response code';
 		}
 		// allowed response numbers
-		$allowed = array(
+		$this->allowed = array(
 			300,301,302,303,304,305,306,307,
 			400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,
 			500,501,502,503,504,505
 		);
 		$found = false;
-		for ($i = 0; $i < count($allowed); $i++) {
-			if ($this->response_code == $allowed[$i]) {
+		for ($i = 0; $i < count($this->allowed); $i++) {
+			if ($this->response_code == $this->allowed[$i]) {
 				$found = true;
 				break;
 			}
@@ -66,6 +68,33 @@ abstract class ResponsesAbstract extends \Exception {
 			$this->internal_error = true;
 			$this->error_message = 'Response Code '.$response_code.' is not a valid 300, 400, or 500 http response code';
 		}
+	}
+
+	// redirect
+	public function redirect($params = array())
+	{
+		if (isSet($params['force_code']) && in_array($params['force_code'], $this->allowed)) {
+			$code = $params['force_code'];
+		} else {
+			$code = $this->response_code;
+		}
+		if (is_array($params) && empty($params)) {
+			throw new ResponseAbstractException('Redirect parameter not set. String or array must be given');
+		} else {
+			if (is_array($params) && !isSet($params['redirect_url'])) {
+				throw new ResponseAbstractException('Redirect url parameter not set. String must be given');
+			} elseif (is_array($params)) {
+				$redirect = $params['redirect_url'];
+			} elseif (is_string($params)) {
+				$redirect = $params; 
+			} else {
+				throw new ResponseAbstractException('Invalid type set for redirect url paramter. String must be given');
+			}
+		}
+		header(':', true, $code);
+		header('Location: '.$redirect);
+		die;
+		
 	}
 
 	public function loadView($html = true)
