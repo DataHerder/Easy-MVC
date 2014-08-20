@@ -17,7 +17,8 @@ on where the libraries exist.
 
 If you want more control and less "do it for you" kind of approach with
 the ability to be completely OOP if you wish or have a heavy functional
-base, it's up to you.  You are welcome to contribute if you like it.
+base, then this may be a good suite for you.  You are welcome to
+contribute if you like it.
 
 ### Installing
 Just download from git and make sure it's in a fresh folder on your
@@ -28,13 +29,13 @@ Unfortunately, there is no documentation as of yet, but that will
 be coming very shortly.
 
 ### I noticed an API directory... what's that about?
-That's an API library that handles API requests within the API folder in
-the Applications directory.  Requests look like this:
+That's an API library that handles API requests within the API folder.
+
+Requests look like this:
 http://my_project.com/api/main_request/sub_request/my_request.xml
 
-And the API will spit back xml, even if there is an error.
-
-This will be covered in the forthcoming documentation.
+The API will handle that as a request.  The documentation for this
+is forthcoming.
 
 ###Coming Shortly
 An update script so that on every pull you can run this
