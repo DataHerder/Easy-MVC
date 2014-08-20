@@ -3,7 +3,7 @@
  * EasyMVC
  * A fast lightweight Model View Controller framework
  * 
- * Copyright (C) 2012  Paul Carlton
+ * Copyright (C) 2014  Paul Carlton
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
