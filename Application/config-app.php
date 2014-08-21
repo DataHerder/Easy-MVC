@@ -88,10 +88,48 @@ define('REDIRECT_SLASH', true);
 
 
 /**
+ * Here you define that you want strict autoloading
+ * where if a file is not found, the
+ */
+define('REQUIRE_FAIL_ON_AUTOLOAD', true);
+
+
+/**
  * Show easymvc framework if no user function is defined
  * for handling and this is set to true
  */
 define('SHOW_HTML_ON_LAST_EXCEPTION', true);
+
+
+/**
+ * Define the default view
+ */
+define('DEFAULT_CONTROLLER', 'Landing');
+
+
+/**
+ * The controller as case sensitive
+ *
+ * !IMPORTANT!
+ * Controller is case sensitive then we don't mess with
+ * the controller casing which is based off the url
+ * that is put into the browser.  If it is we force:
+ * ucwords($controller_variable)
+ *
+ * The reason we force ucwords() on the controller page is
+ * because the naming convention is an uppercase on the
+ * file.  It is important to keep this convention throughout the
+ * application.
+ *
+ * All files that are included and are namespaced for auto loading
+ * classes SHOULD and SHOULD ALWAYS be proper case eg:
+ * NewsClass.php
+ * PeopleModule.php
+ *
+ * Etc...
+ */
+define('CONTROLLER_CASE_SENSITIVE', false);
+
 
 ///////////////////////////////////////////////////////////
 //

@@ -104,6 +104,30 @@ abstract class EasyMVCBootstrap {
 		$this->_initHook();
 	}
 
+
+
+	/**
+	 * @var bool|callable
+	 */
+	private static $autoload_fail_func = false;
+	/**
+	 * Set AutoLoadFail is the function called for setting
+	 * customized fail functionality for autoloading libraries
+	 * in the /Application folder.
+	 *
+	 * @param $callable_func
+	 */
+	public function setAutoloadFail($callable_func)
+	{
+		if (is_callable($callable_func)) {
+			self::$autoload_fail_func = $callable_func;
+		} else {
+			self::$autoload_fail_func = false;
+		}
+	}
+
+
+
 	/**
 	 * Autoload classes without instantiating bootstrap
 	 */
@@ -157,6 +181,7 @@ abstract class EasyMVCBootstrap {
 	 * It is registered in when constructing the bootstrap
 	 *
 	 * @param String $class_name
+	 * @throws BootstrapException
 	 * @return null
 	 */
 	public static function requireLibrary($class_name)
@@ -184,6 +209,11 @@ abstract class EasyMVCBootstrap {
 		$file_dir = $dir.'/'.join("/", $parts).".php";
 		if (is_readable($file_dir)) {
 			require_once($file_dir);
+		} elseif (is_callable(self::$autoload_fail_func)) {
+			$func = self::$autoload_fail_func;
+			$func($file_dir);
+		} elseif (REQUIRE_FAIL_ON_AUTOLOAD) {
+			throw new BootstrapException('Required Library not found: '.$file_dir);
 		}
 
 	}
