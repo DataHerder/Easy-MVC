@@ -97,7 +97,7 @@ abstract class EasyMVCBootstrap {
 	{
 		$this->requireHelpers();
 		$this->globals['root'] = 'index';
-		$this->globals['default_controller'] = 'Landing';
+		$this->globals['default_controller'] = DEFAULT_CONTROLLER;
 		$this->_init();
 		spl_autoload_register('EasyMVC\EasyMVCBootstrap::requireLibrary');
 		// hook the initialization after loading the library
