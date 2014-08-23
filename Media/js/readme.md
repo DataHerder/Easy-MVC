@@ -1,0 +1,1 @@
+###All javascript scripts placed in here

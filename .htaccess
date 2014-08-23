@@ -23,7 +23,7 @@ RewriteRule ^\.htaccess$ - [F]
 #== {MVCARCH1} ignore index.php, cron and public folder
 RewriteCond $1 !^(index\.php|public|cron)
 #== {MVCARCH2} ignore all media type files
-RewriteCond $1 !(\.js|\.css|\.less|\.jpg|\.gif|\.png|\.jpeg|\.bmp|\.ico|\.mp3|\.wav)$
+RewriteCond $1 !(\.js|\.css|\.less|\.jpg|\.gif|\.png|\.jpeg|\.bmp|\.ico|\.mp3|\.wav|\.scss)$
 #== {MVCARCH3} ignore miscellaneous media files used in stylesheets
 RewriteCond $1 !(\.eot|\.svg|\.ttf|\.woff)
 #== {MVCARCH4} ignore pdfs, .docs, .txt files
