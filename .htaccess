@@ -56,7 +56,7 @@ RewriteRule ^([^?]*)\??(.*)$ index.php?__library_router_route=$1&%1 [L]
 #// END custom exclusions conditions
 
 #== {MVCAPI1} Keep the GET parameters in %1 variable
-RewriteCond %{QUERY_STRING} !directory.*
+RewriteCond %{QUERY_STRING} ^(.*)$
 #== {MVCAPI2} Rewrite all paths directed to the API to the API controller
 RewriteRule ^[Aa]pi/(.*)$ Api/index.php?directory=$1 [L]
 
