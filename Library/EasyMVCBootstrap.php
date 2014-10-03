@@ -187,7 +187,7 @@ abstract class EasyMVCBootstrap {
 	public static function requireLibrary($class_name)
 	{
 		// for here we want to shift the first
-		$dir = $_SERVER['DOCUMENT_ROOT'].self::CUR_DIR;
+		$dir = ROOT_DIR;
 		if (preg_match("@Api/?$@", $dir)) {
 			$dir = preg_replace("@Api/?$@", "", $dir);
 		}
