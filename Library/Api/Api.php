@@ -11,26 +11,27 @@ class Api extends ApiClasses\ApiAbstract {
 
 	protected $data = array();
 	protected $method = 'GET';
+	/**
+	 * @var null|callable
+	 */
+	private static $set_version = null;
 	private $type = 'json';
-	protected static $api_call_string = '';
-	protected static $top_call = '';
-	protected static $api_call = '';
-	protected static $api_call_type = '';
-	protected static $api_call_subtype = '';
+	private $version_control = null;
+	private static $ApiData = null;
 	private static $header_content = false;
+	private static $duration = 0;
 	/**
 	 * @var null|callable
 	 */
 	protected static $header_content_callback = null;
-	protected static $static_type = 'json';
-	//private static $log_hit = true;
 
 
 	/**
-	* Create new Api call
-	*/
-	public function __construct()
+	 * Create new Api call
+	 */
+	public function __construct($version = null)
 	{
+		self::$duration = microtime();
 		$this->setHeader();
 		if (method_exists($this, '_onConstruct')) {
 			$this->_onConstruct();
@@ -41,6 +42,18 @@ class Api extends ApiClasses\ApiAbstract {
 			if (isSet($_GET['directory'])) {
 				$this->_setReturnType($_GET['directory']);
 			}
+			// The ApiData object holds the request information in an ArrayObject class
+			// Essentially an array with added class functionality
+			if (is_null($version) && is_numeric($this->version_control)) {
+				$api_version = $this->version_control;
+			} elseif (!is_null($version)) {
+				// this is set no matter what
+				$api_version = $version;
+			} else {
+				// default to api_version 1
+				$api_version = 1;
+			}
+			self::$ApiData = new ApiData($api_version, $this->type);
 		} catch (ApiSyntaxException $e) {
 
 			// defaulted to JSON output for now
@@ -61,6 +74,40 @@ class Api extends ApiClasses\ApiAbstract {
 	}
 
 
+	/**
+	 *
+	 *
+	 * @param null|string|callable $callable_func
+	 */
+	public function setVersion($callable_func = null)
+	{
+		if (is_callable($callable_func)) {
+			$this->version_control = $callable_func($_GET['directory']);
+		}
+	}
+
+
+
+	/**
+	 *
+	 *
+	 * @return ApiData|null
+	 */
+	public static function getApiDataObject()
+	{
+		return self::$ApiData;
+	}
+
+
+	/**
+	 *
+	 *
+	 * @return mixed
+	 */
+	public static function getApiVersion()
+	{
+		return self::$ApiData['version'];
+	}
 
 	/**
 	 * Set the header content type, when the API outputs the data it will
@@ -98,13 +145,15 @@ class Api extends ApiClasses\ApiAbstract {
 				(is_null($directory) || !is_string($directory)) ||
 				(is_string($directory) && $directory == ''))
 			{
-				self::$api_call_string = $_GET['directory'];
+				self::$ApiData['api_call_string'] = $_GET['directory'];
+				//self::$api_call_string = $_GET['directory'];
 			} else {
-				self::$api_call_string = $directory;
+				self::$ApiData['api_call_string'] = $directory;
+				//self::$api_call_string = $directory;
 				$this->_setReturnType($directory);
 			}
 
-			$api_call = explode("/", self::$api_call_string);
+			$api_call = explode("/", self::$ApiData['api_call_string']);
 
 			if (preg_match("/\./", $api_call[0])) {
 				$napi = current(explode('.', $api_call[0]));
@@ -112,9 +161,14 @@ class Api extends ApiClasses\ApiAbstract {
 				$napi = $api_call[0];
 			}
 
-			self::$top_call = $napi;
-			self::$api_call = $api_call;
-			self::$api_call_type = $api_call[0];
+			//self::$top_call = $napi;
+			//self::$api_call = $api_call;
+			//self::$api_call_type = $api_call[0];
+			self::$ApiData->set(array(
+				'top_call' => $napi,
+				'api_call' => $api_call,
+				'api_call_type' => $api_call[0],
+			));
 			$this->_getSubtype($api_call, true);
 
 			if (method_exists($this, '_init')) {
@@ -123,16 +177,13 @@ class Api extends ApiClasses\ApiAbstract {
 				array_walk($api_call, function(&$value) {
 					$value = array_shift(explode(".", $value));
 				});
-				$this->_init(array(
-					'top_call' => self::$top_call,
-					'api_call' => self::$api_call,
-					'api_call_type' => self::$api_call_type,
-					'api_call_subtype' => self::$api_call_subtype,
+				self::$ApiData->set(array(
 					'api_call_user_subtypes' => $api_call,
-					'api_call_string' => self::$api_call_string,
 					'method' => $this->method,
 					'post' => (empty($post_data)) ? $_POST : $post_data,
+					'get' => (empty($get_data)) ? $_GET : $get_data,
 				));
+				$this->_init(self::$ApiData->call());
 			} else {
 				throw new ApiException('_init function does not exist.  You must extend the API and create a the _init function, see documentation');
 			}
@@ -170,21 +221,24 @@ class Api extends ApiClasses\ApiAbstract {
 		if (strpos($directory, '.') !== false) {
 			$this->type = array_pop(explode(".", $directory)); // will always have $_GET var for type
 		} else {
-			$this->type = '';
+			$this->type = 'xml';
 		}
-		self::$static_type = $this->type;
+		self::$ApiData['type'] = $this->type;
+		//self::$static_type = $this->type;
 		if (!preg_match("/msgpack|json|xml/", $this->type)) {
 			$error = true;
 			foreach ($this->allowed_extensions as $allowed) {
 				if (preg_match('/'.$allowed.'/', $this->type)) {
-					self::$static_type = $allowed;
+					self::$ApiData['static_type'] = $allowed;
+					//self::$static_type = $allowed;
 					$error = false;
 					break;
 				}
 			}
 			if ($error) {
 				// force the api syntax exception and set the static type to xml
-				self::$static_type = 'xml';
+				self::$ApiData['static_type'] = 'xml';
+				//self::$static_type = 'xml';
 				throw new ApiSyntaxException('Illegal api call with wrong type', 1);
 			}
 		}
@@ -210,11 +264,13 @@ class Api extends ApiClasses\ApiAbstract {
 		$last = $api_call[1]; // subtype is ALWAYS the second subtype
 		if (preg_match("/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/", $last)) {
 			$subtype = array_shift(explode(".", $last));
-			self::$api_call_subtype = $subtype;
+			self::$ApiData['api_call_subtype'] = $subtype;
+			//self::$api_call_subtype = $subtype;
 		} elseif (strpos($last, '.') === false) {
 			// set the subtype with no extension in case it has been allowed
 			$subtype = $last;
-			self::$api_call_subtype = $last;
+			self::$ApiData['api_call_subtype'] = $last;
+			//self::$api_call_subtype = $last;
 		} elseif ($strict) {
 			throw new ApiException('Unknown api subtype call');
 		}
@@ -269,19 +325,20 @@ class Api extends ApiClasses\ApiAbstract {
 			'success' => false,
 			'code' => $code,
 			'code-message' => $code_message,
-			'message' => $message
+			'message' => $message,
+			'duration' => microtime() - self::$duration,
 		);
 
-		if (self::$static_type == 'json') {
+		if (self::$ApiData['static_type'] == 'json') {
 			return json_encode($message);
-		} elseif (self::$static_type == 'msgpack') {
+		} elseif (self::$ApiData['static_type'] == 'msgpack') {
 			return MsgPack_Coder::encode($message);
-		} elseif (self::$static_type == 'xml') {
+		} elseif (self::$ApiData['static_type'] == 'xml') {
 			$Xml = new XmlOutput();
 			return $Xml->load($message)->__toString();
 		} else {
-			if (isSet(self::$_customErrors[self::$static_type]) && is_callable(self::$_customErrors[self::$static_type])) {
-				$custom_func = self::$_customErrors[self::$static_type];
+			if (isSet(self::$_customErrors[self::$ApiData['static_type']]) && is_callable(self::$_customErrors[self::$ApiData['static_type']])) {
+				$custom_func = self::$_customErrors[self::$ApiData['static_type']];
 				$custom_func($message);
 			} else {
 				throw new ApiException('Custom error output not set for custom extension used');
@@ -326,23 +383,25 @@ class Api extends ApiClasses\ApiAbstract {
 	{
 
 		$message = array(
+			'result' => 'success',
 			'success' => true,
 			'return_type' => $return_type,
 			'type' => $type,
 			'subtype' => $subtype,
-			'data' => $data
+			'duration' => microtime() - self::$duration,
+			'data' => $data,
 		);
 
-		if (self::$static_type == 'json') {
+		if (self::$ApiData['static_type'] == 'json') {
 			return json_encode($message);
-		} elseif (self::$static_type == 'msgpack') {
+		} elseif (self::$ApiData['static_type'] == 'msgpack') {
 			return MsgPack_Coder::encode($message);
-		} elseif (self::$static_type == 'xml') {
+		} elseif (self::$ApiData['static_type'] == 'xml') {
 			$Xml = new XmlOutput();
 			return $Xml->load($message)->__toString();
 		} else {
-			if (isSet(self::$_customSuccesses[self::$static_type]) && is_callable(self::$_customSuccesses[self::$static_type])) {
-				return self::$_customSuccesses[self::$static_type]($message);
+			if (isSet(self::$_customSuccesses[self::$ApiData['static_type']]) && is_callable(self::$_customSuccesses[self::$ApiData['static_type']])) {
+				return self::$_customSuccesses[self::$ApiData['static_type']]($message);
 			} else {
 				throw new ApiException('Custom success not set for custom extension used');
 			}
@@ -376,19 +435,19 @@ class Api extends ApiClasses\ApiAbstract {
 	{
 		if (is_callable(self::$header_content_callback)) {
 			header(self::$header_content_callback(array(
-				'top_call' => self::$top_call,
-				'api_call' => self::$api_call,
-				'api_call_type' => self::$api_call_type,
-				'api_call_subtype' => self::$api_call_subtype,
-				'api_call_string' => self::$api_call_string,
+				'top_call' => self::$ApiData['top_call'],
+				'api_call' => self::$ApiData['api_call'],
+				'api_call_type' => self::$ApiData['api_call_type'],
+				'api_call_subtype' => self::$ApiData['api_call_subtype'],
+				'api_call_string' => self::$ApiData['api_call_string'],
 			)));
 		} elseif (is_string(self::$header_content_callback)) {
 			header(self::$header_content_callback);
-		} elseif (self::$static_type == 'json') {
+		} elseif (self::$ApiData['static_type'] == 'json') {
 			header('Content-type: application/json');
-		} elseif (self::$static_type == 'xml') {
+		} elseif (self::$ApiData['static_type'] == 'xml') {
 			header('Content-type: application/xml');
-		} elseif (self::$static_type == 'msgpack') {
+		} elseif (self::$ApiData['static_type'] == 'msgpack') {
 			// unreadable in browser for now
 			//header('Content-type: application/x-msgpack');
 			header('Content-type: text/plain');
@@ -409,8 +468,8 @@ class Api extends ApiClasses\ApiAbstract {
 		}
 		try {
 			return self::success(
-				self::$top_call,
-				self::$api_call_subtype,
+				self::$ApiData['top_call'],
+				self::$ApiData['api_call_subtype'],
 				$this->data,
 				$this->type
 			);
