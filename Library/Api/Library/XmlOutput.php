@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyMVC\Api\ApiClasses;
+namespace EasyMVC\Api\Library;
 
 class XmlOutput {
 

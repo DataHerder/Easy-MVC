@@ -2,12 +2,12 @@
 
 namespace EasyMVC\Api;
 
-use EasyMVC\Api\ApiClasses\ApiException;
-use EasyMVC\Api\ApiClasses\ApiSyntaxException;
-use EasyMVC\Api\ApiClasses\XmlOutput;
+use EasyMVC\Api\Library\ApiException;
+use EasyMVC\Api\Library\ApiSyntaxException;
+use EasyMVC\Api\Library\XmlOutput;
 use EasyMVC\Api\Modules\MsgPack\MsgPack_Coder;
 
-class Api extends ApiClasses\ApiAbstract {
+class Api extends Library\ApiAbstract {
 
 	protected $data = array();
 	protected $method = 'GET';
@@ -27,8 +27,8 @@ class Api extends ApiClasses\ApiAbstract {
 
 
 	/**
-	 * Create new Api call
-	 */
+	* Create new Api call
+	*/
 	public function __construct($version = null)
 	{
 		self::$duration = microtime();
@@ -53,7 +53,7 @@ class Api extends ApiClasses\ApiAbstract {
 				// default to api_version 1
 				$api_version = 1;
 			}
-			self::$ApiData = new ApiData($api_version, $this->type);
+			self::$ApiData = new Data($api_version, $this->type);
 		} catch (ApiSyntaxException $e) {
 
 			// defaulted to JSON output for now
@@ -214,7 +214,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 * Get the return type from the directory string and set the return type in the API
 	 *
 	 * @param string $directory
-	 * @throws ApiClasses\ApiSyntaxException
+	 * @throws Library\ApiSyntaxException
 	 */
 	private function _setReturnType($directory = null)
 	{
@@ -256,7 +256,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 * @param $api_call
 	 * @param bool $strict
 	 * @return mixed|string
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 */
 	private function _getSubtype($api_call, $strict = false)
 	{
@@ -289,7 +289,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 *
 	 * @param string $for
 	 * @param null $callable
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 */
 	protected function setError($for = '', $callable = null)
 	{
@@ -305,7 +305,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 * @param int $code
 	 * @param string $message
 	 * @param string $code_message
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 * @internal param string $type
 	 * @return string
 	 */
@@ -358,7 +358,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 *
 	 * @param string $for
 	 * @param null $callable
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 */
 	protected function setSuccess($for = '', $callable = null)
 	{
@@ -376,7 +376,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 * @param string $subtype
 	 * @param array $data
 	 * @param string $return_type
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 * @return string
 	 */
 	public static function success($type = '', $subtype = '', $data = array(), $return_type = '')
@@ -418,7 +418,7 @@ class Api extends ApiClasses\ApiAbstract {
 	 * for successful outputs and set the error and success messages for those outputs
 	 *
 	 * @param array $types
-	 * @throws ApiClasses\ApiException
+	 * @throws Library\ApiException
 	 */
 	protected function allowExtensions($types = array())
 	{

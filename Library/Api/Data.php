@@ -2,7 +2,7 @@
 
 namespace EasyMVC\Api;
 
-class ApiData extends \ArrayObject {
+class Data extends \ArrayObject {
 
 	private static $data = array();
 
