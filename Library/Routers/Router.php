@@ -106,11 +106,24 @@ final class Router {
 			$page = $this->Bootstrap->root;
 		}
 
+		// if controller case sensitivity is set to true, then the literal url
+		// signifies the case of the controller, otherwise it follows proper case
+		// \Application\Controllers\ControllerName
+		if (!CONTROLLER_CASE_SENSITIVE) {
+			$page = ucwords($page);
+			$controller = ucwords($controller);
+		}
+
 		$controllers = array();
 		if ($page != $this->Bootstrap->root) {
 			if ($controller == '') {
 				$controller = $this->Bootstrap->default_controller;
 			}
+
+			if (!CONTROLLER_CASE_SENSITIVE) {
+				$controller = ucwords($controller);
+			}
+
 			$controllers[0] = array(
 				'page' => $page,
 				'controller' => $controller,
