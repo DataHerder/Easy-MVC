@@ -175,7 +175,8 @@ class Api extends Library\ApiAbstract {
 				array_shift($api_call);
 				array_shift($api_call);
 				array_walk($api_call, function(&$value) {
-					$value = array_shift(explode(".", $value));
+					$tmp = explode(".", $value);
+					$value = array_shift($tmp);
 				});
 				self::$ApiData->set(array(
 					'api_call_user_subtypes' => $api_call,
@@ -219,7 +220,8 @@ class Api extends Library\ApiAbstract {
 	private function _setReturnType($directory = null)
 	{
 		if (strpos($directory, '.') !== false) {
-			$this->type = array_pop(explode(".", $directory)); // will always have $_GET var for type
+			$tmp = explode(".", $directory); // will always have $_GET var for type
+			$this->type = array_pop($tmp);
 		} else {
 			$this->type = 'xml';
 		}
@@ -263,7 +265,8 @@ class Api extends Library\ApiAbstract {
 		$subtype = '';
 		$last = $api_call[1]; // subtype is ALWAYS the second subtype
 		if (preg_match("/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/", $last)) {
-			$subtype = array_shift(explode(".", $last));
+			$subtype = explode(".", $last);
+			$subtype = array_shift($subtype);
 			self::$ApiData['api_call_subtype'] = $subtype;
 			//self::$api_call_subtype = $subtype;
 		} elseif (strpos($last, '.') === false) {

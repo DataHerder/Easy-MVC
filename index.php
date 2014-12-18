@@ -51,7 +51,7 @@ require("Library/EasyMVCBootstrap.php");
 require("Application/bootstrap.php");
 
 try {
-	if (class_exists('Bootstrap')) {
+	if (!class_exists('\Application\Bootstrap')) {
 		throw new \Exception(
 			'No Bootstrap Exists!
 			Please ensure you have the file: bootstrap.php in you applications folder.

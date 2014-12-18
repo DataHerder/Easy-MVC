@@ -13,8 +13,7 @@ class Landing extends \EasyMVC\Controllers\ControllerAbstract {
 	 */
 	public function index()
 	{
-		//$this->Load->view('Landings/welcome');
-		$this->Load->view('index');
+		$this->Load->view('Landings/welcome');
 	}
 
 }
